@@ -9,53 +9,37 @@
             var resourceName = "AdventOfCode.Resources.2022.Day5.txt";
             var fileContents = DayServices.ReadResourceAsString(resourceName);
 
-            new CrateMover("CrateMover 9000").ProcessData(fileContents);
+            new CrateMover("CrateMover 9000", 8, 10).ProcessData(fileContents);
 
-            new CrateMover9001().ProcessData(fileContents);
+            new CrateMover9001(8, 10).ProcessData(fileContents);
 
         }
     }
 
-
-    public class CrateMover
+    public class StackBuilder
     {
-        public CrateMover(string model)
+        protected virtual List<Range> GetFixedLengths()
         {
-            Model = model;
-        }
-
-        public string Model { get; set; }
-
-        public void ProcessData(string fileContents)
-        {
-            var stackMarker = $"{Environment.NewLine}";
-            var stackData = fileContents.Split(stackMarker).Take(9);
-            var stacks = new List<List<string>>();
-            
-            BuildStacks(stacks, stackData);
-            var data = fileContents.Split(stackMarker).Skip(10).ToArray();
-            
-            MoveCrates(stacks, data);
-            var output = string.Empty;
-            for (int x = 0; x < stacks.Count; x++)
-            {
-                output += stacks[x].First();
-            }
-
-            Console.WriteLine($"Top of the crate stack with the {Model} reads as {output}.");
-        }
-
-        protected void BuildStacks(List<List<string>> stacks, IEnumerable<string> stackData)
-        {
-            var fixedLengths = new List<Range>
+            return new List<Range>
             {
                 1..4, 5..8, 9..12, 13..16, 17..20, 21..24, 25..28, 29..32, 33..35
             };
-            for (var i = 0; i < 9; i++)
+        }
+
+        public virtual List<List<string>> BuildStacks(
+            string fileContents, 
+            int stackContentLineTake)
+        {
+            var stackMarker = $"{Environment.NewLine}";
+            var stackData = fileContents.Split(stackMarker).Take(stackContentLineTake);
+            var stacks = new List<List<string>>();
+
+            var fixedLengths = GetFixedLengths();
+            for (var i = 0; i < fixedLengths.Count; i++)
             {
                 stacks.Add(new());
             }
-            for (int i = stackData.Take(8).Count() - 1, j = 0; i >= 0; i--, j++)
+            for (int i = stackData.Take(stackContentLineTake).Count() - 1, j = 0; i >= 0; i--, j++)
             {
                 var stackRow = stackData.ToArray()[j];
                 for (int x = 0; x < fixedLengths.Count; x++)
@@ -72,18 +56,58 @@
                     }
                 }
             }
+
+            return stacks;  
+        }
+    }
+
+
+    public class CrateMover
+    {
+        protected readonly string MoveToken = "move";
+        protected readonly string FromToken = "from";
+        protected readonly string ToToken = "to";
+        protected readonly StackBuilder builder = new();
+
+        public CrateMover(string model, int contentLineTake, int contentLineSkip)
+        {
+            Model = model;
+            ContentLineTake = contentLineTake;
+            ContentLineSkip = contentLineSkip;
         }
 
-        protected void MoveCrates(List<List<string>> stacks, string[] data)
+        public string Model { get; init; }
+
+        public int ContentLineTake { get; init; }
+
+        public int ContentLineSkip { get; init; }
+
+        public void ProcessData(string fileContents)
+        {
+            var stackMarker = $"{Environment.NewLine}";
+            var stacks = builder.BuildStacks(fileContents, ContentLineTake);
+            var data = fileContents.Split(stackMarker).Skip(ContentLineSkip).ToArray();
+            
+            MoveCrates(stacks, data);
+            var output = string.Empty;
+            for (int x = 0; x < stacks.Count; x++)
+            {
+                output += stacks[x].First();
+            }
+
+            Console.WriteLine($"Top of the crate stack with the {Model} reads as {output}.");
+        }
+
+        protected virtual void MoveCrates(List<List<string>> stacks, string[] data)
         {
             for (var i = 0; i < data.Length; i++)
             {
                 // initialize data indexes
-                var moveEndIndex = data[i].IndexOf("move") + 4;
-                var fromIndex = data[i].IndexOf("from");
-                var fromEndIndex = fromIndex + 4;
-                var toIndex = data[i].IndexOf("to");
-                var toEndIndex = toIndex + 2;
+                var moveEndIndex = data[i].IndexOf(MoveToken) + MoveToken.Length;
+                var fromIndex = data[i].IndexOf(FromToken);
+                var fromEndIndex = fromIndex + FromToken.Length;
+                var toIndex = data[i].IndexOf(ToToken);
+                var toEndIndex = toIndex + ToToken.Length;
                 // extract data
                 var moveValue = data[i][moveEndIndex..fromIndex];
                 var fromValue = data[i][fromEndIndex..toIndex];
@@ -108,7 +132,8 @@
 
     public class CrateMover9001 : CrateMover
     {
-        public CrateMover9001() : base("CrateMover 9001")
+        public CrateMover9001(int contentLineTake, int contentLineSkip) 
+            : base("CrateMover 9001", contentLineTake, contentLineSkip)
         { }
 
         protected override void Arrange(List<List<string>> stacks, int fromId, int toId, int moveId)

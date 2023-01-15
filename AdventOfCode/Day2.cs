@@ -1,14 +1,10 @@
-﻿using System.Diagnostics;
-using System.Linq;
-
-namespace AdventOfCode
+﻿namespace AdventOfCode
 {
-	class Day2
+    class Day2
 	{
 		public static void Main(string[] args)
 		{
             Console.WriteLine("2022.Day2");
-
             var resourceName = "AdventOfCode.Resources.2022.Day2.txt";
             var fileContents = DayServices.ReadResourceAsString(resourceName);
 
@@ -38,7 +34,11 @@ namespace AdventOfCode
 
 	static class GameEngine
 	{
-        private static Dictionary<SelectionEnum, int> SelectionPointMap = new()
+        const int WinnerScore = 6;
+        const int DrawScore = 3;
+        const int LoserScore = 0;
+
+        private static readonly Dictionary<SelectionEnum, int> SelectionPointMap = new()
         {
             [SelectionEnum.Rock] = 1,
             [SelectionEnum.Paper] = 2,
@@ -66,14 +66,14 @@ namespace AdventOfCode
         private static int ProcessScore(SelectionEnum playerPlay, SelectionEnum oppPlay)
 		{
             if (playerPlay == oppPlay)
-				return 3;
+				return DrawScore;
 			if ((playerPlay == SelectionEnum.Scissors && oppPlay == SelectionEnum.Paper)
 				||
 				(playerPlay == SelectionEnum.Paper && oppPlay == SelectionEnum.Rock)
 				||
 				(playerPlay == SelectionEnum.Rock && oppPlay == SelectionEnum.Scissors))
-				return 6;
-			return 0;
+				return WinnerScore;
+			return LoserScore;
         }
 
         #region Ultra Play

@@ -1,13 +1,10 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace AdventOfCode
+﻿namespace AdventOfCode
 {
     class Day3
     {
         public static void Main(string[] args)
         {
             Console.WriteLine("2022.Day3");
-
             var resourceName = "AdventOfCode.Resources.2022.Day3.txt";
             var fileContents = DayServices.ReadResourceAsString(resourceName);
 
@@ -18,8 +15,9 @@ namespace AdventOfCode
             var prioritySum = rucksacks.Sum(p => new Rucksack(p).Priority);
             Console.WriteLine($"The total sum of the priorities is {prioritySum}.");
 
-            var rucksackGroups = rucksacks.Chunk(3);
+            var rucksackGroups = rucksacks.Chunk(RucksackGroup.Capacity);
             Console.WriteLine($"The total of {rucksackGroups.Count()} rucksack groups.");
+            
             var badgePrioritySum = rucksackGroups.Select(g => new RucksackGroup(g).BadgePriority).Sum();
             Console.WriteLine($"The total sum of the priorities is {badgePrioritySum}.");
         }
@@ -63,6 +61,8 @@ namespace AdventOfCode
 
     class RucksackGroup
     {
+        public const int Capacity = 3;
+
         public RucksackGroup(IEnumerable<string> data)
         {
             var intersection = data.ToArray().IntersectMany();
@@ -78,8 +78,8 @@ namespace AdventOfCode
         public static IEnumerable<TSource> IntersectMany<TSource>(this IEnumerable<IEnumerable<TSource>> owner)
         {
             IEnumerable<TSource> intersection = Array.Empty<TSource>();
-            owner.ToList().ForEach(d => {
-                intersection = !intersection.Any() ? d : d.Intersect(intersection);
+            owner.ToList().ForEach(s => {
+                intersection = !intersection.Any() ? s : s.Intersect(intersection);
             });
             return intersection;
         }

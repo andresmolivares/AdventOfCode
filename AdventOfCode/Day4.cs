@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace AdventOfCode
+﻿namespace AdventOfCode
 {
     class Day4
     {
@@ -47,8 +45,7 @@ namespace AdventOfCode
 
         public bool HasIntersections()
         { 
-            var result = BuildRange(ElfRange1).Intersect(BuildRange(ElfRange2)).Any();
-            return result;
+            return BuildRange(ElfRange1).Intersect(BuildRange(ElfRange2)).Any();
         }
 
         public bool HasFullOverlap()
