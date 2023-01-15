@@ -132,8 +132,10 @@
 
     public class CrateMover9001 : CrateMover
     {
+        const string ModelName = "CrateMover 9001";
+
         public CrateMover9001(int contentLineTake, int contentLineSkip) 
-            : base("CrateMover 9001", contentLineTake, contentLineSkip)
+            : base(ModelName, contentLineTake, contentLineSkip)
         { }
 
         protected override void Arrange(List<List<string>> stacks, int fromId, int toId, int moveId)
