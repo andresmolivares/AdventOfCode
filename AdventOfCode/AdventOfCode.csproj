@@ -5,7 +5,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>AdventOfCode.Day5</StartupObject>
+    <StartupObject>AdventOfCode.Day6</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +14,7 @@
     <None Remove="Resources\2022.Day3.txt" />
     <None Remove="Resources\2022.Day4.txt" />
     <None Remove="Resources\2022.Day5.txt" />
+    <None Remove="Resources\2022.Day6.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\2022.Day6.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\2022.Day5.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
