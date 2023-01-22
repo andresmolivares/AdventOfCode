@@ -71,17 +71,4 @@
 
         public int BadgePriority { get; set; }
     }
-
-
-    public static class IEnumerableExtension
-    {
-        public static IEnumerable<TSource> IntersectMany<TSource>(this IEnumerable<IEnumerable<TSource>> owner)
-        {
-            IEnumerable<TSource> intersection = Array.Empty<TSource>();
-            owner.ToList().ForEach(s => {
-                intersection = !intersection.Any() ? s : s.Intersect(intersection);
-            });
-            return intersection;
-        }
-    }
 }

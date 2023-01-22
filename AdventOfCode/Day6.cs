@@ -32,26 +32,4 @@
             }
         }
     }
-
-
-    static class ReadOnlySpanExtenstion
-    {
-        public static (int Index, string Content) UniqueItemsInLength<T>(this ReadOnlySpan<T> owner, int chunkLength)
-        {
-            for (int start = 0; start + 1 + chunkLength <= owner.Length; start++)
-            {
-                var slice = owner.Slice(start, chunkLength);
-                if (!slice
-                    .ToArray()
-                    .GroupBy(a => a)
-                    .SelectMany(ab => ab.Skip(1).Take(1))
-                    .ToList()
-                    .Any())
-                {
-                    return (start + chunkLength, slice.ToString());
-                }
-            }
-            return (-1, string.Empty);
-        }
-    }
 }
